@@ -1,0 +1,27 @@
+{
+  "name": "web",
+  "version": "0.0.0",
+  "authors": [
+    "Arana Software <info@aranasoft.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "bootstrap": "~3.1.1",
+    "underscore": "~1.6.0",
+    "angular": "~1.2.14",
+    "font-awesome": "~4.0.3",
+    "angular-resource": "~1.2.14",
+    "toastr": "~2.0.1",
+    "nprogress": "~0.1.2",
+    "signalr": "~2.0.2",
+    "angular-signalr-hub": "*"
+  }
+}

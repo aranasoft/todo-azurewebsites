@@ -119,7 +119,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. remove --production from npm install
 
     ```dos
-    pushd src/web
+    pushd src\web
     echo 3. Install npm packages
     IF EXIST "package.json" (
       call :ExecuteCmd !NPM_CMD! install
@@ -144,9 +144,41 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
     > The equivalent to this locally would be running gulp from the command line. The difference being that you do not have permissions to install globally (npm install -g) on Azure. So, you need to run the local copy.
 
-    
-sync from \src/web/dist
-push azure master
+1. Whew, that is quite a few changes. Looks like a good time to commit changes
+
+## Kudu sync gulp build output to Azure Websites
+1. add \src\web\dist to the -f (from) parameter on the call to Kudu sync
+    ```
+    echo 5. KuduSync
+    IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
+      call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%\src\web\dist" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
+      IF !ERRORLEVEL! NEQ 0 goto error
+    )
+    ```
+
+## Try your deployment changes locally
+1. From the repository root run deploy.cmd
+    ```dos
+    .\deploy.cmd
+    ```
+    > .\deploy.cmd is the powershell version deploy works at the command prompt
+1. Verify the gulp build
+    1. Navigate up a directory from the repository root
+    2. You should see an artfacts folder
+    3. Verify the presence of the wwwroot folder and an index.html file inside it
+        > There will also be some other folders in here. This is just a spot check
+
+## Deploy to Azure
+1. Return the working directory to the repository root
+2. Commit your changes
+    ```dos
+    git add .
+    git ci -m "add gulp build to azure deployment"
+    git push azure master
+    ```
+    > This initial commit will be time consuming. All of the npm packages as well as bower packages need to be installed for the first time. This is a process similar to NuGet package restore. Subsequent deployments will take _significantly_ less time. It is also worth noting that if you are running on the free teir of Azure Websites, there are cpu limits. Depending on the complexity of your build process you may hit them.
+1. Visit the website
+
 
 update app.js remove local service
 uncomment api and service

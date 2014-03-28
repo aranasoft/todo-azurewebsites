@@ -51,8 +51,8 @@ namespace api.Controllers {
 
         private void AddChangeNotification()
         {
-            var queue = new EventQueue();
-	    queue.AddNotification();
+            //var queue = new EventQueue();
+	    //queue.AddNotification();
         }
     }
 }

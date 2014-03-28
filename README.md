@@ -180,18 +180,60 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     > This initial commit will be time consuming. All of the npm packages as well as bower packages need to be installed for the first time. This is a process similar to NuGet package restore. Subsequent deployments will take _significantly_ less time. It is also worth noting that if you are running on the free teir of Azure Websites, there are cpu limits. Depending on the complexity of your build process you may hit them.
 1. Visit the website
 
+## Introduce WebAPI project
+1. Open the TodoSample.sln file in Visual Studio
+1. Rebuild Solution to pull in the NuGet packages
+1. Configure for camelCase JSON serialization 
+    1. Open the App_Start\WebApiConfig.cs file
+    1. remove comments from code setting up the JSON serializer settings
+        
+        ```csharp
+        // Web API configuration and services
+        var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
+        settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+        ```
+1. Determine port number used by IISExpress for Api
+    1. Right click on TodoSample.Api project
+    2. Select Properties
+    3. Select the Web tab on the left
+    4. Note Project Url as _localhost:31008_
+1. Configure client app to use Api instead of local service
+    1. Remove the "TodoService" from web\app\js\app.coffee (lines 5-35)
+    2. Remove comments from the Api "asTodoApi" and "TodoService" (lines 7-47 after delete in previous step)
+1. Add reference to signalr/hubs script
+    1. Open web\app\pages\index.html
+    2. Remove comments from script tag including signalr/hubs
+    
+    ```html
+    <script type="text/javascript" src="/js/vendor.js"></script>
+    <script type="text/javascript" src="/signalr/hubs"></script>
+    <script type="text/javascript" src="/js/app.js"></script>   
+    ```
+    > The order of these scrips is important. The signalR base libaries must be included before the hubs. The hubs must be included before the client code. 
 
-update app.js remove local service
-uncomment api and service
-uncomment signalr in index.html
+1. Create Database
+    1. Build
+    2. Set TodoSample.Api as the startup project
+    3. Open the Package Manager Console (Tools -> NuGet Package Manager -> Package Manager Console)
+    4. In Package Manager Console, set default project to TodoSample.Data
+    5. Run Migrations from the PM> prompt
+        ```dos
+        Update-Database
+        ```
 
-web project
-- uncomment contract resolver in webapiconfig
-- show project properties for port
+1. Test Client and WebAPI combined locally
+    1. Start debugging with TodoSample.Api as the startup project
+    2. \api\todos to the url localhost:3108/api/todos
+        3. You should see an empty array
+    1. Ensure the current directory is \src\web in the powershell window
+    2. Start the web project with a proxy to IIS
+        ```dos
+        gulp run --proxy --proxyPort 31008
+        ```
+2. Add a few items to make sure it works
 
-update database
-
-\src\web gulp run --proxy --proxyPort 31008
+## Integrate WebAPI project into deployment
+1. 
 
 
 

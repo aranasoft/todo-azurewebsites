@@ -233,10 +233,134 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
         gulp run --proxy --proxyPort 31008
         ```
 2. Add a few items to make sure it works
+3. Stop the gulp server with Ctrl-C at the console
+4. Stop debugging in Visual Studio
+5. This seems like a good place to commit changes
 
-## Integrate WebAPI project into deployment
+## Integrate WebAPI project into deployment script
+1. Ensure current working directory is the repository root
+2. Create a scaffolding script for the WebAPI project
+    ```dos
+    azure site deploymentscript --aspWAP .\src\TodoSample.Api\TodoSample.Api.csproj -s .\src\TodoSample.sln -o apiscript
+    ```
+    > Select no at the prompt to overwrite the .deployment file
+3. Open the deploy.cmd in the apiscript directory
+4. Copy the items after the definition of Kudu Sync to the clipboard (lines 50-62)
+
+    ```dos
+    IF NOT DEFINED DEPLOYMENT_TEMP (
+      SET DEPLOYMENT_TEMP=%temp%\___deployTemp%random%
+      SET CLEAN_LOCAL_DEPLOYMENT_TEMP=true
+    )
+    
+    IF DEFINED CLEAN_LOCAL_DEPLOYMENT_TEMP (
+      IF EXIST "%DEPLOYMENT_TEMP%" rd /s /q "%DEPLOYMENT_TEMP%"
+      mkdir "%DEPLOYMENT_TEMP%"
+    )
+    
+    IF NOT DEFINED MSBUILD_PATH (
+      SET MSBUILD_PATH=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe
+    )
+    ```
+1. Paste them in the deploy.cmd in the repository root after the definition of KuduSync and before goto Deployment
+    ```
+      :: Locally just running "kuduSync" would also work
+      SET KUDU_SYNC_CMD=%appdata%\npm\kuduSync.cmd
+    )
+    
+    IF NOT DEFINED DEPLOYMENT_TEMP (
+      SET DEPLOYMENT_TEMP=%temp%\___deployTemp%random%
+      SET CLEAN_LOCAL_DEPLOYMENT_TEMP=true
+    )
+    
+    IF DEFINED CLEAN_LOCAL_DEPLOYMENT_TEMP (
+      IF EXIST "%DEPLOYMENT_TEMP%" rd /s /q "%DEPLOYMENT_TEMP%"
+      mkdir "%DEPLOYMENT_TEMP%"
+    )
+    
+    IF NOT DEFINED MSBUILD_PATH (
+      SET MSBUILD_PATH=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe
+    )
+    
+    goto Deployment
+    ```
+1. Note the Deployment commands in the :: Deployment area
+    1. Restore NuGet packages will pull referenced packages from NuGet before the build
+    2. Build to the temporary path with compile the project
+    3. KuduSync will copy the compiled output to the target folder
+1. Copy all 3 sections to the clipboard (lines 68-89)
+2. Paste this in the deploy.cmd file in the repository root after :Deployment but before echo Handling 
+
+    ```dos
+    ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    :: Deployment
+    :: ----------
+    
+    :Deployment
+    
+    echo Handling .NET Web Application deployment.
+
+    :: 1. Restore NuGet packages
+    IF /I "src\TodoSample.sln" NEQ "" (
+      call :ExecuteCmd "%NUGET_EXE%" restore "%DEPLOYMENT_SOURCE%\src\TodoSample.sln"
+      IF !ERRORLEVEL! NEQ 0 goto error
+    )
+    
+    :: 2. Build to the temporary path
+    IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
+      call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\src\TodoSample.Api\TodoSample.Api.csproj" /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="%DEPLOYMENT_TEMP%";AutoParameterizationWebConfigConnectionStrings=false;Configuration=Release /p:SolutionDir="%DEPLOYMENT_SOURCE%\src\\" %SCM_BUILD_ARGS%
+    ) ELSE (
+      call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\src\TodoSample.Api\TodoSample.Api.csproj" /nologo /verbosity:m /t:Build /p:AutoParameterizationWebConfigConnectionStrings=false;Configuration=Release /p:SolutionDir="%DEPLOYMENT_SOURCE%\src\\" %SCM_BUILD_ARGS%
+    )
+    
+    IF !ERRORLEVEL! NEQ 0 goto error
+    
+    :: 3. KuduSync
+    IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
+      call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_TEMP%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
+      IF !ERRORLEVEL! NEQ 0 goto error
+    )
+
+    echo Handling node.js deployment.
+    ```
+
+1. Update the commented numbers to echo and renumber for clean output
+
+    ```dos
+    :: 1. Restore NuGet packages
+    :: 2. Build to the temporary path
+    :: 3. KuduSync
+    echo 2. Select node version
+    ```
+
+    change these lines to
+    
+    ```dos
+    echo 1. Restore NuGet packages
+    echo 2. Build to the temporary path
+    echo 3. KuduSync
+    echo 4. Select node version    
+    ```
+    > Yes there are more below select node version, you should update those too
+
+1. Make sure NuGet is available for local build
+    > This is an awful hack. The NUGET_EXE environment variable is not set up when running localy. We need to find the NuGet executeable and set the environment variable NUGET_EXE to point at it. Mine happens to be installed by Chocolatey, yours may be elseware. Just ensure that the version is 2.8 or greater
+    1. Above goto Deployment after the definition of MSBUILD_PATH, add a line that ensures NUGET_EXE is available
+
+        ```dos
+        IF NOT DEFINED MSBUILD_PATH (
+          SET MSBUILD_PATH=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe
+        )
+        
+        IF NOT DEFINED NUGET_EXE (
+          SET NUGET_EXE=c:\Chocolatey\lib\NuGet.CommandLine.2.8.0\tools\nuget.exe
+        )
+        
+        goto Deployment
+        ```
+
+## Azure Deployment
 1. 
-
 
 
 api project

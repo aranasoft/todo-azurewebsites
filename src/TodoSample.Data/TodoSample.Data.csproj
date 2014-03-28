@@ -74,6 +74,11 @@
     <Compile Include="Handlers\ListChanged.cs" />
     <Compile Include="Messages\NotificationEvent.cs" />
     <Compile Include="Messages\PointTally.cs" />
+    <Compile Include="Migrations\201403260122113_InitialMigration.cs" />
+    <Compile Include="Migrations\201403260122113_InitialMigration.Designer.cs">
+      <DependentUpon>201403260122113_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EventQueue.cs" />
     <Compile Include="Services\SimpleQueue.cs" />
@@ -83,6 +88,11 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201403260122113_InitialMigration.resx">
+      <DependentUpon>201403260122113_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

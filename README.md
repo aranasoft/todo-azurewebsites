@@ -148,7 +148,8 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
 ## Kudu sync gulp build output to Azure Websites
 1. add \src\web\dist to the -f (from) parameter on the call to Kudu sync
-    ```
+    
+    ```dos
     echo 5. KuduSync
     IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
       call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%\src\web\dist" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"

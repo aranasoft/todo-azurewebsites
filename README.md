@@ -217,6 +217,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     3. Open the Package Manager Console (Tools -> NuGet Package Manager -> Package Manager Console)
     4. In Package Manager Console, set default project to TodoSample.Data
     5. Run Migrations from the PM> prompt
+
         ```dos
         Update-Database
         ```
@@ -227,6 +228,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
         3. You should see an empty array
     1. Ensure the current directory is \src\web in the powershell window
     2. Start the web project with a proxy to IIS
+
         ```dos
         gulp run --proxy --proxyPort 31008
         ```

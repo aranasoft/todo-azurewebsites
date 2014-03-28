@@ -58,7 +58,7 @@ gulp.task 'html', () ->
   gulp.src(config.files.html.app)
     .pipe(plumber())
     .pipe(gulp.dest('./generated'))
-    .pipe(livereload())
+    #.pipe(livereload())
     .pipe(htmlmin(config.htmlmin))
     .pipe(gulp.dest('./dist'))
 
@@ -79,7 +79,7 @@ gulp.task 'jsApp', () ->
     ).pipe(plumber())
     .pipe(concat(config.output.jsApp))
     .pipe(gulp.dest('./generated'))
-    .pipe(livereload())
+    #.pipe(livereload())
     .pipe(ngmin())
     .pipe(uglify())
     .pipe(gulp.dest('./dist'))
@@ -89,7 +89,7 @@ gulp.task 'jsVendor', ['install'], () ->
     .pipe(plumber())
     .pipe(concat(config.output.jsVendor))
     .pipe gulp.dest('./generated')
-    .pipe(livereload())
+    #.pipe(livereload())
     .pipe(gulp.dest('./dist'))
   
 gulp.task 'css', ['install'], () ->
@@ -98,7 +98,7 @@ gulp.task 'css', ['install'], () ->
     .pipe(less())
     .pipe(concat(config.output.css))
     .pipe(gulp.dest('./generated'))
-    .pipe(livereload())
+    #.pipe(livereload())
     .pipe(cssmin())
     .pipe(gulp.dest('./dist'))
   

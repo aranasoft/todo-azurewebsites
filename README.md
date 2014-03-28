@@ -18,9 +18,11 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
 ## Getting Started
 1. Fork this repository in github to your github account.
-> Use that fork button in the upper right, it is really easy.
+
+> Use that fork button in the upper right. It is really easy; Don't fear the fork 
 
 1. Clone the fork to a local github repository
+
     ```bash
     git clone git@github.com:MY_GITHUB_USERNAME/todo-azurewebsites.git
     ```
@@ -35,11 +37,13 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     ```
 
 1. Make sure gulp is installed globally
-    ````
+
+    ````bash
     npm install -g gulp
     ```
 
 1. Run the build  
+
     ```bash
     gulp run
     ```
@@ -77,6 +81,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     2. SelectNodeVersion
     3. Install npm packages
 1. Move the 1. KuduSync block below the 3. Install npm packages block
+
     ```dos
     :Deployment
     echo Handling node.js deployment.
@@ -98,6 +103,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
         IF !ERRORLEVEL! NEQ 0 goto error
     )
     ```
+
 1. Change the :: comment blocks to echo to help with diagnostic output
     
     ```dos
@@ -113,6 +119,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     echo 2. Install npm packages
     echo 3. KuduSync
     ```
+
 1. wrap the Install npm packages block in a directory change
 1. remove directory prefix on package.json check
 1. remove inner pushd popd
@@ -129,7 +136,9 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     ```
     
     > This mirrors the npm install you did locally
+
 1. Add a block to execute gulp locally this goes after the Install npm packages block
+
     ```dos
     )
 
@@ -159,25 +168,32 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
 ## Try your deployment changes locally
 1. From the repository root run deploy.cmd
+
     ```dos
     .\deploy.cmd
     ```
+
     > .\deploy.cmd is the powershell version deploy works at the command prompt
+
 1. Verify the gulp build
     1. Navigate up a directory from the repository root
     2. You should see an artfacts folder
     3. Verify the presence of the wwwroot folder and an index.html file inside it
+
         > There will also be some other folders in here. This is just a spot check
 
 ## Deploy to Azure
 1. Return the working directory to the repository root
 2. Commit your changes
+
     ```dos
     git add .
     git ci -m "add gulp build to azure deployment"
     git push azure master
     ```
+
     > This initial commit will be time consuming. All of the npm packages as well as bower packages need to be installed for the first time. This is a process similar to NuGet package restore. Subsequent deployments will take _significantly_ less time. It is also worth noting that if you are running on the free teir of Azure Websites, there are cpu limits. Depending on the complexity of your build process you may hit them.
+
 1. Visit the website
 
 ## Introduce WebAPI project
@@ -192,6 +208,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
         var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
         settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         ```
+
 1. Determine port number used by IISExpress for Api
     1. Right click on TodoSample.Api project
     2. Select Properties
@@ -209,6 +226,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     <script type="text/javascript" src="/signalr/hubs"></script>
     <script type="text/javascript" src="/js/app.js"></script>   
     ```
+
     > The order of these scrips is important. The signalR base libaries must be included before the hubs. The hubs must be included before the client code. 
 
 1. Create Database
@@ -232,6 +250,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
         ```dos
         gulp run --proxy --proxyPort 31008
         ```
+
 2. Add a few items to make sure it works
 3. Stop the gulp server with Ctrl-C at the console
 4. Stop debugging in Visual Studio
@@ -240,10 +259,13 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 ## Integrate WebAPI project into deployment script
 1. Ensure current working directory is the repository root
 2. Create a scaffolding script for the WebAPI project
+
     ```dos
     azure site deploymentscript --aspWAP .\src\TodoSample.Api\TodoSample.Api.csproj -s .\src\TodoSample.sln -o apiscript
     ```
+
     > Select no at the prompt to overwrite the .deployment file
+
 3. Open the deploy.cmd in the apiscript directory
 4. Copy the items after the definition of Kudu Sync to the clipboard (lines 50-62)
 
@@ -262,7 +284,9 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
       SET MSBUILD_PATH=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe
     )
     ```
+
 1. Paste them in the deploy.cmd in the repository root after the definition of KuduSync and before goto Deployment
+
     ```
       :: Locally just running "kuduSync" would also work
       SET KUDU_SYNC_CMD=%appdata%\npm\kuduSync.cmd
@@ -284,6 +308,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     
     goto Deployment
     ```
+
 1. Note the Deployment commands in the :: Deployment area
     1. Restore NuGet packages will pull referenced packages from NuGet before the build
     2. Build to the temporary path with compile the project
@@ -341,10 +366,13 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     echo 3. KuduSync
     echo 4. Select node version    
     ```
+
     > Yes there are more below select node version, you should update those too
 
 1. Make sure NuGet is available for local build
+
     > This is an awful hack. The NUGET_EXE environment variable is not set up when running localy. We need to find the NuGet executeable and set the environment variable NUGET_EXE to point at it. Mine happens to be installed by Chocolatey, yours may be elseware. Just ensure that the version is 2.8 or greater
+
     1. Above goto Deployment after the definition of MSBUILD_PATH, add a line that ensures NUGET_EXE is available
 
         ```dos
@@ -361,9 +389,11 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
 ## Azure Deployment
 1. Create a SQL Database with a name of _todosample_ on Azure and obtain its connection string
+
     > Note that this shoud be in the same region as your WebSite
 2. Visit the CONFIGURE tab of the Azure Website in the management portal
 3. Add a connection string entry for _todosdb_ and set its value to the connection string from step 1 of Azure Deployment
+
     > What is awesome here is that this allows for your web.config to remain safe. It will only ever point at a local database. You do not have to expose your production secrets anywhere but on the portal (or configuration script if you prefer). This setting will override the value in the web.config at runtime.
 
 1. commit your changes and push to Azure
@@ -407,11 +437,15 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 2. Start without debugging Ctrl-F5
 1. Set TodoSample.Processor as the startup project
 2. Start Debugging F5
+
     > You may only attach the debugger in Visual Studio to a single process. In this case we are choosing to attach to the TodoSample.Processor because it is the project we have not run yet. You could also start up the Processor from the command line as it is simply a console application. The choice is yours.
+
 1. Start up the local proxy
+
     ```dos
     gulp run --proxy --proxyPort 31008
     ```
+
 1. Validate new task items being created and in the console window the jobs being picked up from the queue.
 1. Shut down the proxy and stop debugging in Visual Studio. You may also want to kill off the instance of IISExpress that was running the Api. 
 

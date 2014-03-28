@@ -370,13 +370,54 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
 
 ## Update Api to send notifications to storage queue
-1.
+1. Create a storage account in the management portal
+2. Copy the management key to the clipboard
+3. Update connection strings from Emulator connection string to live connection string 
 
-api project
-remove comments on notification
-change storage connection strings
-start web project without debugging
-start console app with debugging
+    > This requirement should go away with a future release of the storage emulator. As of this writing the storage emulator is behind what is actually deployed in Azure. The team working on the WebJobs SDK is using some of these features not yet available in the emulator. This is a known issue and will likely be addressed soon(ish).
+
+    1. Update the web.config in the TodoSample.Api project
+
+        ```xml
+        <add name="storage" connectionString="DefaultEndpointsProtocol=https;AccountName=[accountname];AccountKey=[accesskey]"/>
+        ```
+
+    1. Update the app.config in the TodoSample.Processor project
+    
+        ```xml
+        <add name="AzureJobsRuntime" connectionString="DefaultEndpointsProtocol=https;AccountName=[accountname];AccountKey=[accesskey]"/>
+        <add name="AzureJobsData" connectionString="DefaultEndpointsProtocol=https;AccountName=[accountname];AccountKey=[accesskey]"/>
+        ```
+
+    > You may want to create two storage accounts one for local development and one for deployment. The connection strings will be overriden in the portal in a later step much like we did with the database connection string earlier.
+    
+1. Open the NotificationController in the TodoSample.Api project
+2. Remove the comments from the AddChangeNotification helper method
+
+    ```csharp
+    private void AddChangeNotification()
+    {
+        var queue = new EventQueue();
+	    queue.AddNotification();
+    }
+    ```
+
+## Testing locally
+1. Set TodoSample.Api as the startup project
+2. Start without debugging Ctrl-F5
+1. Set TodoSample.Processor as the startup project
+2. Start Debugging F5
+    > You may only attach the debugger in Visual Studio to a single process. In this case we are choosing to attach to the TodoSample.Processor because it is the project we have not run yet. You could also start up the Processor from the command line as it is simply a console application. The choice is yours.
+1. Start up the local proxy
+    ```dos
+    gulp run --proxy --proxyPort 31008
+    ```
+1. Validate new task items being created and in the console window the jobs being picked up from the queue.
+1. Shut down the proxy and stop debugging in Visual Studio. You may also want to kill off the instance of IISExpress that was running the Api. 
+
+# Including WebJob in the deployment script
+
+
 
 
 

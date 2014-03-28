@@ -124,7 +124,7 @@
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
   });
-  orbweaver.factory("asMessageService", function($rootScope, $timeout, asToastrOptions) {
+  orbweaver.factory("asMessageService", ['$rootScope', '$timeout', 'asToastrOptions', function($rootScope, $timeout, asToastrOptions) {
     toastr.options = asToastrOptions;
 
     return {
@@ -141,7 +141,7 @@
 	toastr.error(message);
       }
     };
-  });
+  }]);
 
 
   orbweaver.directive("asWellCollapsible", function () {

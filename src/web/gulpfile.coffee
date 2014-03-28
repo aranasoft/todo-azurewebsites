@@ -88,6 +88,7 @@ gulp.task 'jsVendor', ['install'], () ->
   gulp.src(config.files.js.vendor)
     .pipe(plumber())
     .pipe(concat(config.output.jsVendor))
+    .pipe(uglify())
     .pipe gulp.dest('./generated')
     #.pipe(livereload())
     .pipe(gulp.dest('./dist'))

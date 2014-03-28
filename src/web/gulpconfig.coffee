@@ -25,14 +25,14 @@ module.exports =
       vendor: [
         'vendor/components/underscore/underscore.js'
         'vendor/components/jquery/dist/jquery.js'
-	      'vendor/components/nprogress/nprogress.js'
-	      'vendor/components/toastr/toastr.js'
         'vendor/components/angular/angular.js'
 	      'vendor/components/angular-route/angular-route.js'
         'vendor/components/angular-animate/angular-animate.js'
 	      'vendor/components/angular-resource/angular-resource.js'
         'vendor/components/signalr/jquery.signalR-2.0.2.js'
         'vendor/components/angular-signalr-hub/signalr-hub.js'
+        'vendor/components/nprogress/nprogress.js'
+        'vendor/components/toastr/toastr.js'
         'vendor/js/**/*.js'
       ]
     less:

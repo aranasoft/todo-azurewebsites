@@ -360,7 +360,12 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
         ```
 
 ## Azure Deployment
-1. 
+1. Create a SQL Database with a name of _todosample_ on Azure and obtain its connection string
+    > Note that this shoud be in the same region as your WebSite
+2. Visit the CONFIGURE tab of the Azure Website in the management portal
+3. Add a connection string entry for _todosdb_ and set its value to the connection string from step 1 of Azure Deployment
+    > What is awesome here is that this allows for your web.config to remain safe. It will only ever point at a local database. You do not have to expose your production secrets anywhere but on the portal (or configuration script if you prefer). This setting will override the value in the web.config at runtime.
+
 
 
 api project

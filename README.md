@@ -34,18 +34,25 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     npm install
     ```
 
+1. Make sure gulp is installed globally
+    ````
+    npm install -g gulp
+    ```
+
 1. Run the build  
     ```bash
     gulp run
     ```
 
+1. If a browser did not open automatically open a browser to localhost:3000
+1. After you have experimented with the functionality in the browser exit the gulp process with Ctrl-C
 
 ##Deploying the web side
 1. Make sure your current working directory is the repository root
 1. Create the WebSite on Azure
 
     ```bash
-    azure site create dbtodosample --git --gitusername USERNAME_FOR_AZURE_DEPLOYMENT
+    azure site create YOUR_TODO_SITENAME --git --gitusername USERNAME_FOR_AZURE_DEPLOYMENT
     ```
 
 1. Create a sample deployment script for a node project
@@ -60,7 +67,53 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 2. Copy its contents to the clipboard
 3. Open the deploy.cmd at the repository root
 4. Paste the clipboard contents
-5. 
+5. Close the deploy.cmd from the nodescripts folder to avoid confusion
+
+
+## Editing Kudu script for gulp build
+1. Locate the :Deployment section in the script
+2. Note the sections for
+    1. KuduSync
+    2. SelectNodeVersion
+    3. Install npm packages
+1. Move the 1. KuduSync block below the 3. Install npm packages block
+    ```dos
+    :Deployment
+    echo Handling node.js deployment.
+    
+    :: 2. Select node version
+    call :SelectNodeVersion
+    
+    :: 3. Install npm packages
+    IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
+        pushd "%DEPLOYMENT_TARGET%"
+        call :ExecuteCmd !NPM_CMD! install --production
+        IF !ERRORLEVEL! NEQ 0 goto error
+        popd
+    )
+    
+    :: 1. KuduSync
+    IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
+        call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
+        IF !ERRORLEVEL! NEQ 0 goto error
+    )
+    ```
+1. Change the :: comment blocks to echo to help with diagnostic output
+        ```
+        :: 2. Select node version
+        :: 3. Install npm packages
+        :: 1. KuduSync
+        ```
+    should become
+    echo 1. Select node version
+    echo 2. Install npm packages
+    echo 3. KuduSync
+    ```
+    ```
+
+
+
+
 move kudusync to bottom
 update echo  to be more useful
 remove deployment target from check for package.json

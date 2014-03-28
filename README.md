@@ -366,7 +366,11 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 3. Add a connection string entry for _todosdb_ and set its value to the connection string from step 1 of Azure Deployment
     > What is awesome here is that this allows for your web.config to remain safe. It will only ever point at a local database. You do not have to expose your production secrets anywhere but on the portal (or configuration script if you prefer). This setting will override the value in the web.config at runtime.
 
+1. commit your changes and push to Azure
 
+
+## Update Api to send notifications to storage queue
+1.
 
 api project
 remove comments on notification

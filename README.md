@@ -99,25 +99,52 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     )
     ```
 1. Change the :: comment blocks to echo to help with diagnostic output
-        ```
-        :: 2. Select node version
-        :: 3. Install npm packages
-        :: 1. KuduSync
-        ```
+    
+    ```dos
+    :: 2. Select node version
+    :: 3. Install npm packages
+    :: 1. KuduSync
+    ```
+    
     should become
+    
+    ```dos 
     echo 1. Select node version
     echo 2. Install npm packages
     echo 3. KuduSync
     ```
+1. wrap the Install npm packages block in a directory change
+1. remove directory prefix on package.json check
+1. remove inner pushd popd
+1. remove --production from npm install
+
+    ```dos
+    pushd src/web
+    echo 3. Install npm packages
+    IF EXIST "package.json" (
+      call :ExecuteCmd !NPM_CMD! install
+      IF !ERRORLEVEL! NEQ 0 goto error
+    )
+    popd
+    ```
+    
+    > This mirrors the npm install you did locally
+1. Add a block to execute gulp locally this goes after the Install npm packages block
+    ```dos
+    )
+
+    echo "Execute Gulp"
+    IF EXIST "Gulpfile.js" (
+      call .\node_modules\.bin\gulp
+      IF !ERRORLEVEL! NEQ 0 goto error
+    )
+    
+    popd
     ```
 
+    > The equivalent to this locally would be running gulp from the command line. The difference being that you do not have permissions to install globally (npm install -g) on Azure. So, you need to run the local copy.
 
-
-
-move kudusync to bottom
-update echo  to be more useful
-remove deployment target from check for package.json
-pushd to \src\web\ before npm install
+    
 sync from \src/web/dist
 push azure master
 

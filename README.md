@@ -19,7 +19,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 ## Getting Started
 1. Fork this repository in github to your github account.
 
-> Use that fork button in the upper right. It is really easy; Don't fear the fork 
+	> Use that fork button in the upper right. It is really easy; Don't fear the fork 
 
 1. Clone the fork to a local github repository
 
@@ -51,7 +51,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. If a browser did not open automatically open a browser to localhost:3000
 1. After you have experimented with the functionality in the browser exit the gulp process with Ctrl-C
 
-##Deploying the web side
+##Deploying the web site
 1. Make sure your current working directory is the repository root
 1. Create the WebSite on Azure
 
@@ -123,13 +123,12 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. wrap the Install npm packages block in a directory change
 1. remove directory prefix on package.json check
 1. remove inner pushd popd
-1. remove --production from npm install
 
     ```dos
     pushd src\web
     echo 3. Install npm packages
     IF EXIST "package.json" (
-      call :ExecuteCmd !NPM_CMD! install
+      call :ExecuteCmd !NPM_CMD! install --production
       IF !ERRORLEVEL! NEQ 0 goto error
     )
     popd
@@ -144,7 +143,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
     echo "Execute Gulp"
     IF EXIST "Gulpfile.js" (
-      call .\node_modules\.bin\gulp
+      call .\node_modules\.bin\gulp build
       IF !ERRORLEVEL! NEQ 0 goto error
     )
     
@@ -242,7 +241,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
 1. Test Client and WebAPI combined locally
     1. Start debugging with TodoSample.Api as the startup project
-    2. \api\todos to the url localhost:3108/api/todos
+    2. add \api\todos to the url yeilding _localhost:31008/api/todos_
         3. You should see an empty array
     1. Ensure the current directory is \src\web in the powershell window
     2. Start the web project with a proxy to IIS
@@ -314,7 +313,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     2. Build to the temporary path with compile the project
     3. KuduSync will copy the compiled output to the target folder
 1. Copy all 3 sections to the clipboard (lines 68-89)
-2. Paste this in the deploy.cmd file in the repository root after :Deployment but before echo Handling 
+2. Paste this in the deploy.cmd file in the repository root after :Deployment but before echo Handling node.js deployment
 
     ```dos
     ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -348,6 +347,36 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
     echo Handling node.js deployment.
     ```
+	> This actually introduces a bug with Kudu sync that is tricky to track down. Both Kudu sync commands are using the same manifest. Right now, the msbuild occurs first building into temp. Then Kudu sync copies from temp to the final destination. The gulp runs followed by Kudu sync syncronizing the final destination. We will fix this now by changing the order and some of the the destinations.
+	
+1. Move the Kudu sync command for the msbuild step after the Kudu sync command for the gulp build
+
+	```dos
+	popd
+	
+	echo 6. KuduSync
+	IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
+  	call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%\src\web\dist" -t "%DEPLOYMENT_TARGET%" -n "%DEPLOYMENT_SOURCE%" -p "%u%" -i ".git;.hg;.deployment;deploy.cmd"
+	  IF !ERRORLEVEL! NEQ 0 goto error
+	)
+	
+	echo 7. KuduSync
+	IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
+	  call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_TEMP%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
+	  IF !ERRORLEVEL! NEQ 0 goto error
+	)
+	```
+1. Change the destination for the gulp build to DEPLOYMENT_TEMP
+1. Change the manifest to %DEPLOYMENT_SOURCE%\src\web\generated\manifest to both the next and previous manifest on the gulp build Kudu sync
+
+	```dos
+	echo 6. KuduSync
+	IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
+	  call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%\src\web\dist" -t "%DEPLOYMENT_TEMP%" -n "%DEPLOYMENT_SOURCE%\src\web\generated\manifest" -p "%DEPLOYMENT_SOURCE%\src\web\generated\manifest" -i ".git;.hg;.deployment;deploy.cmd"
+ 
+	  IF !ERRORLEVEL! NEQ 0 goto error
+	)
+	```
 
 1. Update the commented numbers to echo and renumber for clean output
 
@@ -363,11 +392,11 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     ```dos
     echo 1. Restore NuGet packages
     echo 2. Build to the temporary path
-    echo 3. KuduSync
-    echo 4. Select node version    
+    echo 3. Select node version
+    echo 4. Install npm packages    
     ```
 
-    > Yes there are more below select node version, you should update those too
+    > Yes there are more below install npm packages, you should update those too
 
 1. Make sure NuGet is available for local build
 
@@ -386,6 +415,13 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
         
         goto Deployment
         ```
+1. Run a local deployment for testing
+	1. Return working directory to repository root
+	2. Run the deployment script
+
+		```dos
+		deploy.cmd
+		```
 
 ## Azure Deployment
 1. Create a SQL Database with a name of _todosample_ on Azure and obtain its connection string

@@ -533,10 +533,13 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 	echo Handling node.js deployment.
 
 	```
+
 1. Perform a local deployment
+
 	```dos
 	deploy.cmd
 	```
+
 2. Note the copying of app_data in the output. That is our new WebJob
 3. Commit your changes
 4. Push to Azure

@@ -450,8 +450,43 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. Shut down the proxy and stop debugging in Visual Studio. You may also want to kill off the instance of IISExpress that was running the Api. 
 
 # Including WebJob in the deployment script
+1. Ensure current working directory is the repository root
+1. Create a scaffolding script for the WebJobs project
 
+	```dos
+	azure site deploymentscript --dotNetConsole .\src\TodoSample.Processor\TodoSample.Processor.csproj -s .\src\TodoSample.sln -o webjobscript
+	```
 
+1. Open the deploy.cmd in the webjobscript directory
+2. Inspect the Deployment section
+	1. Note that the restore nuget is the same as what we have. Package restore is done at the solution level
+	2. Note that the output path is different than our current msbuild process. This one builds to a sub-folder. That indicates to us that this msbuild needs to follow our existing one.
+	2. Note the presence of the WEB_JOB_DEPLOY_CMD. At first glance, it would seem like something we need. What this command actually does is copy a HTML file into the website if only a WebJob is deployed. You can think if it as being similar to the hostingstart.html only this page will notify the visitor that the WebSite is running a WebJob
+	3. The KuduSync is the same as our current sync for msbuild
+	4. Shiny, not a lot to do this time.
+1. Copy the msbuild step to the clipboard (lines 76-78)
 
+	```dos
+	:: 2. Build to the temporary path
+	call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\src\TodoSample.Processor\TodoSample.Processor.csproj" /nologo /verbosity:m /t:Build /p:Configuration=Release;OutputPath="%DEPLOYMENT_TEMP%\app_data\jobs\continuous\deployedJob" /p:SolutionDir="%DEPLOYMENT_SOURCE%\src\\" %SCM_BUILD_ARGS%
+	IF !ERRORLEVEL! NEQ 0 goto error
+	```
 
+1. Open the deploy.cmd in the repository root
+2. Paste this msbuild step after step 2 and before step 3
+3. Change the comments to echo and renumber for diagnostics. (If you are lazy like me you can use 2a instead of renumbering)
+
+	```dos
+	  call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\src\TodoSample.Api\TodoSample.Api.csproj" /nologo /verbosity:m /t:Build /p:AutoParameterizationWebConfigConnectionStrings=false;Configuration=Release /p:SolutionDir="%DEPLOYMENT_SOURCE%\src\\" %SCM_BUILD_ARGS%
+	)
+	
+	IF !ERRORLEVEL! NEQ 0 goto error
+	
+	echo 2a. Build to the temporary path
+	call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\src\TodoSample.Processor\TodoSample.Processor.csproj" /nologo /verbosity:m /t:Build /p:Configuration=Release;OutputPath="%DEPLOYMENT_TEMP%\app_data\jobs\continuous\deployedJob" /p:SolutionDir="%DEPLOYMENT_SOURCE%\src\\" %SCM_BUILD_ARGS%
+	IF !ERRORLEVEL! NEQ 0 goto error
+
+	echo 3. KuduSync
+	```
+1. Perform a local deployment
 

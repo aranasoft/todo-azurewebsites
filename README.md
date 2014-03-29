@@ -435,11 +435,12 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     ```
 
 1. Visit the CONFIGURE tab of the Azure Website in the management portal
-1. Add a connection string entry for _todosdb_ and set its value to the connection string from step 1 of Azure Deployment
+1. Add a connection string entry for _todosdb_ and set its value to the connection string used in step 2 of Azure Deployment
 
     > What is awesome here is that this allows for your web.config to remain safe. It will only ever point at a local database. You do not have to expose your production secrets anywhere but on the portal (or configuration script if you prefer). This setting will override the value in the web.config at runtime.
 
-1. commit your changes and push to Azure
+1. Commit your changes and push to Azure
+1. Visit your WebSite and see your persisted changes now
 
 
 ## Update Api to send notifications to storage queue
@@ -464,7 +465,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
     > You may want to create two storage accounts one for local development and one for deployment. The connection strings will be overriden in the portal in a later step much like we did with the database connection string earlier.
     
-1. Open the NotificationController in the TodoSample.Api project
+1. Open the TodosController in the TodoSample.Api project
 2. Remove the comments from the AddChangeNotification helper method
 
     ```csharp
@@ -529,7 +530,17 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 	call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\src\TodoSample.Processor\TodoSample.Processor.csproj" /nologo /verbosity:m /t:Build /p:Configuration=Release;OutputPath="%DEPLOYMENT_TEMP%\app_data\jobs\continuous\deployedJob" /p:SolutionDir="%DEPLOYMENT_SOURCE%\src\\" %SCM_BUILD_ARGS%
 	IF !ERRORLEVEL! NEQ 0 goto error
 
-	echo 3. KuduSync
+	echo Handling node.js deployment.
+
 	```
 1. Perform a local deployment
+	```dos
+	deploy.cmd
+	```
+2. Note the copying of app_data in the output. That is our new WebJob
+3. Commit your changes
+4. Push to Azure
+5. Visit the WebJobs tab under your Website on the portal
+6. Sit back and think about how cool this really is
+
 

@@ -29,7 +29,7 @@ module.exports =
 	      'vendor/components/angular-route/angular-route.js'
         'vendor/components/angular-animate/angular-animate.js'
 	      'vendor/components/angular-resource/angular-resource.js'
-        'vendor/components/signalr/jquery.signalR-2.0.2.js'
+        'vendor/components/signalr/jquery.signalR.js'
         'vendor/components/angular-signalr-hub/signalr-hub.js'
         'vendor/components/nprogress/nprogress.js'
         'vendor/components/toastr/toastr.js'

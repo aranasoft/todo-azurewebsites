@@ -22,7 +22,6 @@
   },
   "devDependencies": {
     "body-parser": "^1.0.1",
-    "connect-livereload": "^0.3.2",
     "express": "^3.5.1",
     "gulp-coffeelint": "^0.3.1",
     "gulp-jshint": "^1.5.1",
@@ -32,8 +31,6 @@
     "http-proxy": "^1.0.3",
     "jshint-stylish": "^0.1.5",
     "lodash": "^2.4.1",
-    "open": "0.0.4",
-    "send": "^0.2.0",
-    "tiny-lr": "0.0.5"
+    "open": "0.0.4"
   }
 }

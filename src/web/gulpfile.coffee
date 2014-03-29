@@ -5,6 +5,7 @@ bower = require 'gulp-bower'
 clean = require 'gulp-clean'
 coffee = require 'gulp-coffee'
 concat = require 'gulp-concat'
+livereload = require 'gulp-livereload'
 cssmin = require 'gulp-minify-css'
 html2js = require 'gulp-ng-html2js'
 htmlmin = require 'gulp-htmlmin'
@@ -12,7 +13,9 @@ less = require 'gulp-less'
 ngmin = require 'gulp-ngmin'
 uglify = require 'gulp-uglify'
 plumber = require 'gulp-plumber'
+
 es = require 'event-stream'
+
 
 gulp.task 'default', ['lint','build']
 
@@ -123,6 +126,9 @@ gulp.task 'watch', () ->
 
 gulp.task 'server', ['build'], (cb) ->
   gulpserver = require './gulpserver'
+  lrServer = require('gulp-livereload')()
+  gulp.watch(config.server.base + '/**').on 'change', (file)->
+    lrServer.changed file.path
   gulpserver(config.server, cb)
 
 bowerDirectory = () ->

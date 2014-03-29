@@ -28,7 +28,6 @@ module.exports = (options, done) ->
     httpServer.on "error", handleError
     httpServer.on "clientError", handleSocketError
     app.use(express.compress())
-    app.use(require('connect-livereload')()) if liveReloadEnabled == true
     app.use(express.static(basePath))
     #addBodyParserCallbackToRoutes(app)
 
@@ -49,8 +48,6 @@ module.exports = (options, done) ->
     else
       app.use(bodyParser())
       userConfig.drawRoutes?(app)
-
-    #app.use(express.bodyParser())
 
   gutil.log util.format "Starting express web server in '%s' on port %d", basePath, webPort
   httpServer.listen webPort

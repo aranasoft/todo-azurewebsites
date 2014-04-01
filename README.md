@@ -187,7 +187,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
     ```dos
     git add .
-    git ci -m "add gulp build to azure deployment"
+    git commit -m "add gulp build to azure deployment"
     git push azure master
     ```
 

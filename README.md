@@ -6,7 +6,7 @@ This repository contains the code used to show how to manipulate deployment to A
 1. Integrating client side components to a WebAPI backend. SignalR used to notify clients of changes.
 1. Adding a WebJob to peform background tasks and notify WebAPI of changes. 
 
-Learning how to customize deployment using [Kudu](https://github.com/projectkudu/kudu) is the primary focus exercise. 
+Learning how to customize deployment using [Kudu](https://github.com/projectkudu/kudu) is the primary focus exercise.
 
 ## What you will need
 1. An active subscription to Azure
@@ -19,7 +19,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 ## Getting Started
 1. Fork this repository in github to your github account.
 
-	> Use that fork button in the upper right. It is really easy; Don't fear the fork 
+	> Use that fork button in the upper right. It is really easy; Don't fear the fork
 
 1. Clone the fork to a local github repository
 
@@ -29,7 +29,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
 ##Running the stand-alone client side web application locally
 
-1. Install the build tools  
+1. Install the build tools
 
     ```bash
     cd src/web
@@ -42,7 +42,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     npm install -g gulp
     ```
 
-1. Run the build  
+1. Run the build
 
     ```bash
     gulp run
@@ -85,10 +85,10 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     ```dos
     :Deployment
     echo Handling node.js deployment.
-    
+
     :: 2. Select node version
     call :SelectNodeVersion
-    
+
     :: 3. Install npm packages
     IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
         pushd "%DEPLOYMENT_TARGET%"
@@ -96,7 +96,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
         IF !ERRORLEVEL! NEQ 0 goto error
         popd
     )
-    
+
     :: 1. KuduSync
     IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
         call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
@@ -105,16 +105,16 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     ```
 
 1. Change the :: comment blocks to echo to help with diagnostic output
-    
+
     ```dos
     :: 2. Select node version
     :: 3. Install npm packages
     :: 1. KuduSync
     ```
-    
+
     should become
-    
-    ```dos 
+
+    ```dos
     echo 1. Select node version
     echo 2. Install npm packages
     echo 3. KuduSync
@@ -133,7 +133,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     )
     popd
     ```
-    
+
     > This mirrors the npm install you did locally
 
 1. Add a block to execute gulp locally this goes after the Install npm packages block
@@ -146,7 +146,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
       call .\node_modules\.bin\gulp build
       IF !ERRORLEVEL! NEQ 0 goto error
     )
-    
+
     popd
     ```
 
@@ -156,7 +156,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
 ## Kudu sync gulp build output to Azure Websites
 1. add \src\web\dist to the -f (from) parameter on the call to Kudu sync
-    
+
     ```dos
     echo 5. KuduSync
     IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
@@ -198,10 +198,10 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 ## Introduce WebAPI project
 1. Open the TodoSample.sln file in Visual Studio
 1. Rebuild Solution to pull in the NuGet packages
-1. Configure for camelCase JSON serialization 
+1. Configure for camelCase JSON serialization
     1. Open the App_Start\WebApiConfig.cs file
     1. remove comments from code setting up the JSON serializer settings
-        
+
         ```csharp
         // Web API configuration and services
         var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
@@ -219,14 +219,14 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. Add reference to signalr/hubs script
     1. Open web\app\pages\index.html
     2. Remove comments from script tag including signalr/hubs
-    
+
     ```html
     <script type="text/javascript" src="/js/vendor.js"></script>
     <script type="text/javascript" src="/signalr/hubs"></script>
-    <script type="text/javascript" src="/js/app.js"></script>   
+    <script type="text/javascript" src="/js/app.js"></script>
     ```
 
-    > The order of these scrips is important. The signalR base libaries must be included before the hubs. The hubs must be included before the client code. 
+    > The order of these scrips is important. The signalR base libaries must be included before the hubs. The hubs must be included before the client code.
 
 1. Create Database
     1. Build
@@ -273,12 +273,12 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
       SET DEPLOYMENT_TEMP=%temp%\___deployTemp%random%
       SET CLEAN_LOCAL_DEPLOYMENT_TEMP=true
     )
-    
+
     IF DEFINED CLEAN_LOCAL_DEPLOYMENT_TEMP (
       IF EXIST "%DEPLOYMENT_TEMP%" rd /s /q "%DEPLOYMENT_TEMP%"
       mkdir "%DEPLOYMENT_TEMP%"
     )
-    
+
     IF NOT DEFINED MSBUILD_PATH (
       SET MSBUILD_PATH=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe
     )
@@ -290,21 +290,21 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
       :: Locally just running "kuduSync" would also work
       SET KUDU_SYNC_CMD=%appdata%\npm\kuduSync.cmd
     )
-    
+
     IF NOT DEFINED DEPLOYMENT_TEMP (
       SET DEPLOYMENT_TEMP=%temp%\___deployTemp%random%
       SET CLEAN_LOCAL_DEPLOYMENT_TEMP=true
     )
-    
+
     IF DEFINED CLEAN_LOCAL_DEPLOYMENT_TEMP (
       IF EXIST "%DEPLOYMENT_TEMP%" rd /s /q "%DEPLOYMENT_TEMP%"
       mkdir "%DEPLOYMENT_TEMP%"
     )
-    
+
     IF NOT DEFINED MSBUILD_PATH (
       SET MSBUILD_PATH=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe
     )
-    
+
     goto Deployment
     ```
 
@@ -319,9 +319,9 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     :: Deployment
     :: ----------
-    
+
     :Deployment
-    
+
     echo Handling .NET Web Application deployment.
 
     :: 1. Restore NuGet packages
@@ -329,16 +329,16 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
       call :ExecuteCmd "%NUGET_EXE%" restore "%DEPLOYMENT_SOURCE%\src\TodoSample.sln"
       IF !ERRORLEVEL! NEQ 0 goto error
     )
-    
+
     :: 2. Build to the temporary path
     IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
       call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\src\TodoSample.Api\TodoSample.Api.csproj" /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="%DEPLOYMENT_TEMP%";AutoParameterizationWebConfigConnectionStrings=false;Configuration=Release /p:SolutionDir="%DEPLOYMENT_SOURCE%\src\\" %SCM_BUILD_ARGS%
     ) ELSE (
       call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\src\TodoSample.Api\TodoSample.Api.csproj" /nologo /verbosity:m /t:Build /p:AutoParameterizationWebConfigConnectionStrings=false;Configuration=Release /p:SolutionDir="%DEPLOYMENT_SOURCE%\src\\" %SCM_BUILD_ARGS%
     )
-    
+
     IF !ERRORLEVEL! NEQ 0 goto error
-    
+
     :: 3. KuduSync
     IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
       call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_TEMP%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
@@ -348,18 +348,18 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     echo Handling node.js deployment.
     ```
 	> This actually introduces a bug with Kudu sync that is tricky to track down. Both Kudu sync commands are using the same manifest. Right now, the msbuild occurs first building into temp. Then Kudu sync copies from temp to the final destination. The gulp runs followed by Kudu sync syncronizing the final destination. We will fix this now by changing the order and some of the the destinations.
-	
+
 1. Move the Kudu sync command for the msbuild step after the Kudu sync command for the gulp build
 
 	```dos
 	popd
-	
+
 	echo 6. KuduSync
 	IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
   	call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%\src\web\dist" -t "%DEPLOYMENT_TARGET%" -n "%DEPLOYMENT_SOURCE%" -p "%u%" -i ".git;.hg;.deployment;deploy.cmd"
 	  IF !ERRORLEVEL! NEQ 0 goto error
 	)
-	
+
 	echo 7. KuduSync
 	IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
 	  call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_TEMP%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
@@ -373,7 +373,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 	echo 6. KuduSync
 	IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
 	  call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%\src\web\dist" -t "%DEPLOYMENT_TEMP%" -n "%DEPLOYMENT_SOURCE%\src\web\generated\manifest" -p "%DEPLOYMENT_SOURCE%\src\web\generated\manifest" -i ".git;.hg;.deployment;deploy.cmd"
- 
+
 	  IF !ERRORLEVEL! NEQ 0 goto error
 	)
 	```
@@ -388,12 +388,12 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
     ```
 
     change these lines to
-    
+
     ```dos
     echo 1. Restore NuGet packages
     echo 2. Build to the temporary path
     echo 3. Select node version
-    echo 4. Install npm packages    
+    echo 4. Install npm packages
     ```
 
     > Yes there are more below install npm packages, you should update those too
@@ -408,11 +408,11 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
         IF NOT DEFINED MSBUILD_PATH (
           SET MSBUILD_PATH=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe
         )
-        
+
         IF NOT DEFINED NUGET_EXE (
           SET NUGET_EXE=c:\Chocolatey\lib\NuGet.CommandLine.2.8.0\tools\nuget.exe
         )
-        
+
         goto Deployment
         ```
 1. Run a local deployment for testing
@@ -427,7 +427,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. Create a SQL Database with a name of _todosample_ on Azure and obtain its connection string
 
     > Note that this shoud be in the same region as your WebSite
-    
+
 1. In Package Manager Console, run `update-database`, specifying the Azure connection string
 
     ```
@@ -446,7 +446,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 ## Update Api to send notifications to storage queue
 1. Create a storage account in the management portal
 2. Copy the management key to the clipboard
-3. Update connection strings from Emulator connection string to live connection string 
+3. Update connection strings from Emulator connection string to live connection string
 
     > This requirement should go away with a future release of the storage emulator. As of this writing the storage emulator is behind what is actually deployed in Azure. The team working on the WebJobs SDK is using some of these features not yet available in the emulator. This is a known issue and will likely be addressed soon(ish).
 
@@ -457,14 +457,14 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
         ```
 
     1. Update the app.config in the TodoSample.Processor project
-    
+
         ```xml
         <add name="AzureJobsRuntime" connectionString="DefaultEndpointsProtocol=https;AccountName=[accountname];AccountKey=[accesskey]"/>
         <add name="AzureJobsData" connectionString="DefaultEndpointsProtocol=https;AccountName=[accountname];AccountKey=[accesskey]"/>
         ```
 
     > You may want to create two storage accounts one for local development and one for deployment. The connection strings will be overriden in the portal in a later step much like we did with the database connection string earlier.
-    
+
 1. Open the TodosController in the TodoSample.Api project
 2. Remove the comments from the AddChangeNotification helper method
 
@@ -523,9 +523,9 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 	```dos
 	  call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\src\TodoSample.Api\TodoSample.Api.csproj" /nologo /verbosity:m /t:Build /p:AutoParameterizationWebConfigConnectionStrings=false;Configuration=Release /p:SolutionDir="%DEPLOYMENT_SOURCE%\src\\" %SCM_BUILD_ARGS%
 	)
-	
+
 	IF !ERRORLEVEL! NEQ 0 goto error
-	
+
 	echo 2a. Build to the temporary path
 	call :ExecuteCmd "%MSBUILD_PATH%" "%DEPLOYMENT_SOURCE%\src\TodoSample.Processor\TodoSample.Processor.csproj" /nologo /verbosity:m /t:Build /p:Configuration=Release;OutputPath="%DEPLOYMENT_TEMP%\app_data\jobs\continuous\deployedJob" /p:SolutionDir="%DEPLOYMENT_SOURCE%\src\\" %SCM_BUILD_ARGS%
 	IF !ERRORLEVEL! NEQ 0 goto error
@@ -545,5 +545,4 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 4. Push to Azure
 5. Visit the WebJobs tab under your Website on the portal
 6. Sit back and think about how cool this really is
-
 

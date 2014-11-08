@@ -2,200 +2,311 @@
 
 This repository contains the code used to show how to manipulate deployment to Azure Websites and WebJobs. Topics covered include:
 
-1. Performing gulp based builds for stand-alone client side components.
-1. Integrating client side components to a WebAPI backend. SignalR used to notify clients of changes.
-1. Adding a WebJob to peform background tasks and notify WebAPI of changes. 
+1. Performing `gulp` based builds for stand-alone client side components.
+1. Integrating client side components to a WebAPI and SignalR backend.
+1. Adding a WebJob to peform background tasks and notify WebAPI of changes.
 
 Learning how to customize deployment using [Kudu](https://github.com/projectkudu/kudu) is the primary focus exercise.
 
-## What you will need
-1. An active subscription to Azure
-1. Visual Studio 2013 (possibly 2012, that is just untested)
-1. Azure SDK 2.2
-1. Node.js
-1. Azure Cross-Platform tools
+## Prerequisites
+
+1. An account on GitHub : [github.com](https://www.github.com)
+1. An active Microsoft Azure subscription.
+
+  > If you do not already have a subscription, sign up for a
+  [free trial](http://azure.microsoft.com/pricing/free-trial/))
+
+1. Microsoft Visual Studio 2012 or 2013
+
+  > If you do not have Visual Studio, this workshop is compatible with
+  [Visual Studio Express 2013 for Web](http://www.visualstudio.com/en-us/products/visual-studio-express-vs.aspx)
+  \[[download](http://www.visualstudio.com/downloads/download-visual-studio-vs#d-express-web)\].
+
+1. Azure SDK 2.4 : Download from [azure.microsoft.com/downloads](http://azure.microsoft.com/en-us/downloads/)
+
+  > SDK for Visual Studio 2013 \[[Download](http://go.microsoft.com/fwlink/p/?linkid=323510&clcid=0x409)\]  
+  > SDK for Visual Studio 2012 \[[Download](http://go.microsoft.com/fwlink/p/?linkid=323511&clcid=0x409)\]
+
+1. Node.js : Install from [nodejs.org](http://www.nodejs.org)
+1. A command-line Git source control client
+
+  > We recommend GitHub for Windows \[[download](https://windows.github.com)\], though
+  TortoiseGit \[[download](https://code.google.com/p/tortoisegit/)\] should also work.
+  >
+  > The Git functionality built in to Visual Studio is insufficient
+  for this workshop.
+
 1. A text editor that understands opening a directory in the file system
 
 ## Getting Started
+
+1. Install the Azure Cross-Platform tools, a command-line toolkit that we will use to
+   prepare our site for deployment.
+
+  ```bash
+  npm install azure-cli --global
+  ```
+
+1. Install `gulp`, a command-line task runner that we will use to
+   prepare our JavaScript and CSS assets.
+
+  ```bash
+  npm install gulp --global
+  ```
+
 1. Fork this repository in github to your github account.
 
-	> Use that fork button in the upper right. It is really easy; Don't fear the fork
+  > Use the fork button at the top right. It is really easy; don't fear the fork.
 
 1. Clone the fork to a local github repository
 
-    ```bash
-    git clone git@github.com:MY_GITHUB_USERNAME/todo-azurewebsites.git
-    ```
+  > The URL to Clone your fork is available on the right sidebar.
+  ```bash
+  git clone git@github.com:MY_GITHUB_USERNAME/todo-azurewebsites.git
+  ```
 
-##Running the stand-alone client side web application locally
+## Run the stand-alone client-side web application
 
-1. Install the build tools
+1. Open a command prompt and navigate into the root of your GitHub
+   repository.
+1. Install the build tools that have been pre-configured for this site
 
-    ```bash
-    cd src/web
-    npm install
-    ```
-
-1. Make sure gulp is installed globally
-
-    ````bash
-    npm install -g gulp
+  ```bash
+  cd src/web
+  npm install
     ```
 
 1. Run the build
 
-    ```bash
-    gulp run
-    ```
+  ```bash
+  gulp run
+  ```
 
-1. If a browser did not open automatically open a browser to localhost:3000
-1. After you have experimented with the functionality in the browser exit the gulp process with Ctrl-C
+1. A browser should open automatically for your site. If it did not, navigate to `http://localhost:3000`
+1. Familiarize yourself with the site and its functionality. When you are finished, return to your command window, then exit the `gulp` process by entering `ctrl-c`.
 
-##Deploying the web site
-1. Make sure your current working directory is the repository root
+## Deploying the web site
+
+1. Make sure your current working directory is set to the root of your
+   repository.
 1. Create the WebSite on Azure
 
-    ```bash
-    azure site create YOUR_TODO_SITENAME --git --gitusername USERNAME_FOR_AZURE_DEPLOYMENT
-    ```
+  ```bash
+  azure site create <YOUR_TODO_SITENAME> --git --gitusername <USERNAME_FOR_AZURE_DEPLOYMENT>
+  ```
 
 1. Create a sample deployment script for a node project
 
-    ```bash
-    azure site deploymentscript --node -o nodescript
-    ```
+  ```bash
+  azure site deploymentscript --node -o nodescript
+  ```
 
-    > This will create a deploy.cmd in the nodescript folder that we will use as a template
+  > This will create `deploy.cmd` in the `nodescript` folder that we will use as a template
 
-1. Open the deploy.cmd file in the nodescripts folder
+1. Open `deploy.cmd` file in the `nodescripts` folder
 2. Copy its contents to the clipboard
-3. Open the deploy.cmd at the repository root
+3. Open the `deploy.cmd` file in the repository root
 4. Paste the clipboard contents
-5. Close the deploy.cmd from the nodescripts folder to avoid confusion
+5. Close the `deploy.cmd` from the `nodescripts` folder to avoid confusion
 
 
 ## Editing Kudu script for gulp build
-1. Locate the :Deployment section in the script
-2. Note the sections for
+
+1. Locate the `:Deployment` section in the script.  
+   Note the subsections for:
+
     1. KuduSync
-    2. SelectNodeVersion
-    3. Install npm packages
-1. Move the 1. KuduSync block below the 3. Install npm packages block
+    1. SelectNodeVersion
+    1. Install npm packages
 
-    ```dos
-    :Deployment
-    echo Handling node.js deployment.
+  > **What does each section do?**
+  >
+  > *KuduSync*  
+  > This section directly synchronizes the code files from our Git
+  repository with the code files in our `wwwroot`. However, our
+  application has to do some preparatory work before it is ready to be
+  moved into the `wwwroot` folder, so we will need to reorganize this
+  list.
+  >
+  > *SelectNodeVersion*  
+  > Azure Websites can run many different versions of node.js. This
+  section is where Kudu detects the version of node our application
+  uses so that every action is performed against the proper version
+  >
+  > *Install npm packages*  
+  > Similar to a .NET application's NuGet packages, our node application
+  has dependencies on other node packages. Here KuDu will restore
+  those packages from the npm feed.
 
-    :: 2. Select node version
-    call :SelectNodeVersion
+1. Move the `:: 1. KuduSync` block below the `:: 3. Install npm packages block`. KuduSync should be the last step in our deployment.
 
-    :: 3. Install npm packages
-    IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
-        pushd "%DEPLOYMENT_TARGET%"
-        call :ExecuteCmd !NPM_CMD! install --production
-        IF !ERRORLEVEL! NEQ 0 goto error
-        popd
-    )
+  ```dos
+  :Deployment
+  echo Handling node.js deployment.
 
-    :: 1. KuduSync
-    IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
-        call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
-        IF !ERRORLEVEL! NEQ 0 goto error
-    )
-    ```
+  :: 2. Select node version
+  call :SelectNodeVersion
 
-1. Change the :: comment blocks to echo to help with diagnostic output
-
-    ```dos
-    :: 2. Select node version
-    :: 3. Install npm packages
-    :: 1. KuduSync
-    ```
-
-    should become
-
-    ```dos
-    echo 1. Select node version
-    echo 2. Install npm packages
-    echo 3. KuduSync
-    ```
-
-1. wrap the Install npm packages block in a directory change
-1. remove directory prefix on package.json check
-1. remove inner pushd popd
-
-    ```dos
-    pushd src\web
-    echo 3. Install npm packages
-    IF EXIST "package.json" (
+  :: 3. Install npm packages
+  IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
+      pushd "%DEPLOYMENT_TARGET%"
       call :ExecuteCmd !NPM_CMD! install --production
       IF !ERRORLEVEL! NEQ 0 goto error
-    )
-    popd
-    ```
+      popd
+  )
 
-    > This mirrors the npm install you did locally
+  :: 1. KuduSync
+  IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
+      call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
+      IF !ERRORLEVEL! NEQ 0 goto error
+  )
+  ```
 
-1. Add a block to execute gulp locally this goes after the Install npm packages block
+1. Change the `::` comment blocks to echo and renumber to help with diagnostic output.
 
-    ```dos
-    )
+  *Original code:*
 
-    echo "Execute Gulp"
-    IF EXIST "Gulpfile.js" (
+  ```dos
+  :: 2. Select node version
+  :: 3. Install npm packages
+  :: 1. KuduSync
+  ```
+
+  *Revised code:*
+
+  ```dos
+  echo 1. Select node version
+  echo 2. Install npm packages
+  echo 3. KuduSync
+  ```
+
+1. Wrap the `Install npm packages` block in a directory change.
+
+  > Our `packages.json` file is in `src\web` rather than the repository root,
+  so we will need to push into that directory. When we are finished
+  with `packages.json`, we will need to perform `popd` to return to the
+  previous directory.
+
+  *Revised code:*
+
+  ```dos
+  pushd src\web
+  echo 3. Install npm packages
+  IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
+      pushd "%DEPLOYMENT_TARGET%"
+      call :ExecuteCmd !NPM_CMD! install --production
+      IF !ERRORLEVEL! NEQ 0 goto error
+      popd
+  )
+  popd
+  ```
+
+1. Remove the directory prefix on the `package.json` check. Also, remove the
+   `pushd` and `popd` that are inside of the `IF EXIST` block.
+
+  > Because the current directory is already set to `src\web`, we can
+  perform these actions from directly within this path.
+
+  *Revised code:*
+
+  ```dos
+  pushd src\web
+  echo 3. Install npm packages
+  IF EXIST "package.json" (
+    call :ExecuteCmd !NPM_CMD! install --production
+    IF !ERRORLEVEL! NEQ 0 goto error
+  )
+  popd
+  ```
+
+  > This code now mirrors the `npm install` you did locally when first
+  > getting started with the application.
+
+1. Before the `popd` command above, add a block to execute `gulp`.
+
+  > Be sure to add this after the `Install npm packages` section, but
+  before its closing `popd` command.
+
+  ```dos
+  pushd src\web
+  echo 3. Install npm packages
+  IF EXIST "package.json" (
+    call :ExecuteCmd !NPM_CMD! install --production
+    IF !ERRORLEVEL! NEQ 0 goto error
+  )
+
+  echo 4. Execute Gulp
+  IF EXIST "Gulpfile.js" (
       call .\node_modules\.bin\gulp build
       IF !ERRORLEVEL! NEQ 0 goto error
-    )
+  )
 
-    popd
-    ```
+  popd
+  ```
 
-    > The equivalent to this locally would be running gulp from the command line. The difference being that you do not have permissions to install globally (npm install -g) on Azure. So, you need to run the local copy.
+  > The local equivalent to this block would be running `gulp` from the command
+  line. However, your Azure account does not have permission to globally install
+  (npm install -g) npm packages; this block will execute the application's local copy.
 
-1. Whew, that is quite a few changes. Looks like a good time to commit changes
+1. Whew. That is quite a few changes! Looks like a good time to `git commit` changes.
+
 
 ## Kudu sync gulp build output to Azure Websites
-1. add \src\web\dist to the -f (from) parameter on the call to Kudu sync
 
-    ```dos
-    echo 5. KuduSync
-    IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
+1. Add `\src\web\dist` to the `-f` (from) parameter on the call to Kudu sync.
+
+  > Our `gulp` command prepares all site output and places it within
+  > `src\web\dist`. This directory is equivalent to the `wwwroot`
+  > content, so we will sync this to Azure's `wwwroot`.
+
+  ```dos
+  echo 5. KuduSync
+  IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
       call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%\src\web\dist" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
       IF !ERRORLEVEL! NEQ 0 goto error
-    )
-    ```
+  )
+  ```
+
 
 ## Try your deployment changes locally
-1. From the repository root run deploy.cmd
 
-    ```dos
-    .\deploy.cmd
-    ```
+1. From your repository root, run `deploy.cmd`
 
-    > .\deploy.cmd is the powershell version deploy works at the command prompt
+  ```dos
+  .\deploy.cmd
+  ```
 
-1. Verify the gulp build
-    1. Navigate up a directory from the repository root
-    2. You should see an artfacts folder
-    3. Verify the presence of the wwwroot folder and an index.html file inside it
+  > If you are running from a PowerShell command prompt, besure to include the `.cmd` extension.
 
-        > There will also be some other folders in here. This is just a spot check
+1. Verify the `gulp` build
+  1. Navigate up a directory from the repository root
+  2. You should see an artfacts folder
+  3. Verify the presence of the wwwroot folder and an index.html file inside it
+
+  > There will be other folders in here; this is just a spot check.
 
 ## Deploy to Azure
+
 1. Return the working directory to the repository root
 2. Commit your changes
 
-    ```dos
-    git add .
-    git commit -m "add gulp build to azure deployment"
-    git push azure master
-    ```
+  ```dos
+  git add .
+  git commit -m "add gulp build to azure deployment"
+  git push azure master
+  ```
 
-    > This initial commit will be time consuming. All of the npm packages as well as bower packages need to be installed for the first time. This is a process similar to NuGet package restore. Subsequent deployments will take _significantly_ less time. It is also worth noting that if you are running on the free teir of Azure Websites, there are cpu limits. Depending on the complexity of your build process you may hit them.
+  > This initial commit will be time consuming. All of the npm and bower packages need
+  to be installed for the first time. This is a process similar to NuGet package restore.
+  Subsequent deployments will take _significantly_ less time. It is also worth noting that
+  if you are running on the free tier of Azure Websites, there are CPU limits; depending on
+  the complexity of your build process you may hit them.
 
-1. Visit the website
+1. Visit the website. Your project should be deployed.
+
 
 ## Introduce WebAPI project
+
 1. Open the TodoSample.sln file in Visual Studio
 1. Rebuild Solution to pull in the NuGet packages
 1. Configure for camelCase JSON serialization

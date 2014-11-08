@@ -38,7 +38,9 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
 1. A text editor that understands opening a directory in the file system
 
-## Getting Started
+## Part 1: Introducing the Site
+
+### Getting Started
 
 1. Install the Azure Cross-Platform tools, a command-line toolkit that we will use to
    prepare our site for deployment.
@@ -65,7 +67,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
   git clone git@github.com:MY_GITHUB_USERNAME/todo-azurewebsites.git
   ```
 
-## Run the stand-alone client-side web application
+### Run the stand-alone client-side web application
 
 1. Open a command prompt and navigate into the root of your GitHub
    repository.
@@ -85,7 +87,8 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. A browser should open automatically for your site. If it did not, navigate to `http://localhost:3000`
 1. Familiarize yourself with the site and its functionality. When you are finished, return to your command window, then exit the `gulp` process by entering `ctrl-c`.
 
-## Deploying the web site
+## Part 2: Deplying the Web Site
+### Your first Kudu Deployment Script
 
 1. Make sure your current working directory is set to the root of your
    repository.
@@ -110,7 +113,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 5. Close the `deploy.cmd` from the `nodescripts` folder to avoid confusion
 
 
-## Editing Kudu script for gulp build
+### Editing Kudu script for a gulp build
 
 1. Locate the `:Deployment` section in the script.  
    Note the subsections for:
@@ -251,7 +254,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. Whew. That is quite a few changes! Looks like a good time to `git commit` changes.
 
 
-## Kudu sync gulp build output to Azure Websites
+### Kudu sync gulp build output to Azure Websites
 
 1. Add `\src\web\dist` to the `-f` (from) parameter on the call to Kudu sync.
 
@@ -268,7 +271,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
   ```
 
 
-## Try your deployment changes locally
+### Test your deployment changes locally
 
 1. From your repository root, run `deploy.cmd`
 
@@ -285,7 +288,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
   > There will be other folders in here; this is just a spot check.
 
-## Deploy to Azure
+### Deploy to Azure
 
 1. Return the working directory to the repository root
 2. Commit your changes
@@ -305,66 +308,78 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. Visit the website. Your project should be deployed.
 
 
-## Introduce WebAPI project
+## Part 3: Introducing the .NET Backend
+### Bringing in WebAPI
 
 1. Open the TodoSample.sln file in Visual Studio
 1. Rebuild Solution to pull in the NuGet packages
-1. Configure for camelCase JSON serialization
-    1. Open the App_Start\WebApiConfig.cs file
-    1. remove comments from code setting up the JSON serializer settings
 
-        ```csharp
-        // Web API configuration and services
-        var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
-        settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-        ```
+### Configure JSON Serialization to use camelCase
 
-1. Determine port number used by IISExpress for Api
-    1. Right click on TodoSample.Api project
-    2. Select Properties
-    3. Select the Web tab on the left
-    4. Note Project Url as _localhost:31008_
-1. Configure client app to use Api instead of local service
-    1. Remove the "TodoService" from web\app\js\app.coffee (lines 5-35)
-    2. Remove comments from the Api "asTodoApi" and "TodoService" (lines 7-47 after delete in previous step)
-1. Add reference to signalr/hubs script
-    1. Open web\app\pages\index.html
-    2. Remove comments from script tag including signalr/hubs
+1. Open the `App_Start\WebApiConfig.cs` file
+1. Remove comments from code setting up the JSON serializer settings
 
-    ```html
-    <script type="text/javascript" src="/js/vendor.js"></script>
-    <script type="text/javascript" src="/signalr/hubs"></script>
-    <script type="text/javascript" src="/js/app.js"></script>
-    ```
+  ```csharp
+  // Web API configuration and services
+  var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
+  settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+  ```
 
-    > The order of these scrips is important. The signalR base libaries must be included before the hubs. The hubs must be included before the client code.
+### Determine port number used by IISExpress for Api
 
-1. Create Database
-    1. Build
-    2. Set TodoSample.Api as the startup project
-    3. Open the Package Manager Console (Tools -> NuGet Package Manager -> Package Manager Console)
-    4. In Package Manager Console, set default project to TodoSample.Data
-    5. Run Migrations from the PM> prompt
+1. Right click on TodoSample.Api project
+2. Select Properties
+3. Select the Web tab on the left
+4. Note Project Url as _localhost:31008_
 
-        ```dos
-        Update-Database
-        ```
 
-1. Test Client and WebAPI combined locally
-    1. Start debugging with TodoSample.Api as the startup project
-    2. add \api\todos to the url yeilding _localhost:31008/api/todos_
-        3. You should see an empty array
-    1. Ensure the current directory is \src\web in the powershell window
-    2. Start the web project with a proxy to IIS
+### Configure client app to use Api instead of local service
 
-        ```dos
-        gulp run --proxy --proxyPort 31008
-        ```
+1. Remove the "TodoService" from web\app\js\app.coffee (lines 5-35)
+1. Remove comments from the Api "asTodoApi" and "TodoService" (lines 7-47 after delete in previous step)
 
-2. Add a few items to make sure it works
-3. Stop the gulp server with Ctrl-C at the console
-4. Stop debugging in Visual Studio
-5. This seems like a good place to commit changes
+### Add reference to signalr/hubs script
+
+1. Open web\app\pages\index.html
+1. Remove comments from script tag including signalr/hubs
+
+  ```html
+  <script type="text/javascript" src="/js/vendor.js"></script>
+  <script type="text/javascript" src="/signalr/hubs"></script>
+  <script type="text/javascript" src="/js/app.js"></script>
+  ```
+
+  > The order of these scrips is important. The signalR base libaries
+  (in `vendor.js`) must be included before the hubs. The hubs must be
+  included before the client code (in `app.js`).
+
+### Create Database
+
+1. Compile the solution
+1. Set TodoSample.Api as the startup project
+1. Open the Package Manager Console (Tools -> NuGet Package Manager -> Package Manager Console)
+1. In Package Manager Console, set default project to TodoSample.Data
+1. Run Migrations from the PM> prompt
+
+  ```dos
+  Update-Database
+  ```
+
+### Test Client and WebAPI combined locally
+
+1. Start debugging with `TodoSample.Api` as the startup project.
+1. Add `\api\todos` to the url, yielding `localhost:31008/api/todos`. You should see an empty array.
+1. Ensure the current directory is `\src\web` in the command prompt window
+1. Start the web project with a proxy to IIS
+
+  ```dos
+  gulp run --proxy --proxyPort 31008
+  ```
+
+1. Add a few items to make sure it works
+1. Stop the gulp server with Ctrl-C at the console
+1. Stop debugging in Visual Studio
+1. This seems like a good place to commit changes
 
 ## Integrate WebAPI project into deployment script
 1. Ensure current working directory is the repository root

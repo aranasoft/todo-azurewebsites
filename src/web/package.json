@@ -27,7 +27,6 @@
     "gulp-jshint": "^1.5.1",
     "gulp-livereload": "^1.2.0",
     "gulp-util": "^2.2.14",
-    "http": "0.0.0",
     "http-proxy": "^1.0.3",
     "jshint-stylish": "^0.1.5",
     "lodash": "^2.4.1",

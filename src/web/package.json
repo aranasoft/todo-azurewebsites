@@ -32,7 +32,7 @@
     "gulp-livereload": "^2.1.1",
     "gulp-util": "^3.0.1",
     "http-proxy": "^1.6.1",
-    "jshint-stylish": "^0.1.5",
+    "jshint-stylish": "^1.0.0",
     "lodash": "^2.4.1",
     "open": "0.0.5",
     "serve-static": "^1.7.1"

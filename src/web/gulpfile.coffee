@@ -1,7 +1,7 @@
 gulp = require 'gulp'
+gutil = require 'gulp-util'
 config = require './gulpconfig.coffee'
 
-bower = require 'gulp-bower'
 clean = require 'gulp-clean'
 coffee = require 'gulp-coffee'
 concat = require 'gulp-concat'
@@ -11,8 +11,9 @@ htmlmin = require 'gulp-htmlmin'
 less = require 'gulp-less'
 ngmin = require 'gulp-ngmin'
 uglify = require 'gulp-uglify'
-plumber = require 'gulp-plumber'
+eol = require 'gulp-eol'
 
+plumber = require 'gulp-plumber'
 es = require 'event-stream'
 
 
@@ -28,13 +29,18 @@ gulp.task 'build', [
     'copy'
   ]
 
+hasRunBower = false
 gulp.task 'install', () ->
-  bower()
+  shouldSkipBower = hasRunBower
+  hasRunBower = true
+  bower = require 'gulp-bower'
+  bower() unless shouldSkipBower
 
 gulp.task 'lint', ['coffeelint','jslint']
 
 gulp.task 'coffeelint', () ->
   coffeelint = require 'gulp-coffeelint'
+
   gulp.src(config.files.coffee)
     .pipe(plumber())
     .pipe(coffeelint(config.coffeelint))
@@ -43,6 +49,7 @@ gulp.task 'coffeelint', () ->
 gulp.task 'jslint', () ->
   jslint = require 'gulp-jshint'
   jslintReporter = require 'jshint-stylish'
+
   gulp.src(config.files.js.app)
     .pipe(plumber())
     .pipe(jslint(config.jshint))
@@ -56,7 +63,7 @@ gulp.task 'html', () ->
     .pipe(gulp.dest('./dist'))
 
 gulp.task 'js', ['jsApp','jsVendor']
-  
+
 gulp.task 'jsApp', () ->
   es.concat(
       gulp.src(config.files.coffee)
@@ -73,17 +80,18 @@ gulp.task 'jsApp', () ->
     .pipe(concat(config.output.jsApp))
     .pipe(gulp.dest('./generated'))
     .pipe(ngmin())
-    .pipe(uglify())
+    .pipe(uglify(config.jsmin))
     .pipe(gulp.dest('./dist'))
-  
+
 gulp.task 'jsVendor', ['install'], () ->
   gulp.src(config.files.js.vendor)
     .pipe(plumber())
+    .pipe(eol())
     .pipe(concat(config.output.jsVendor))
     .pipe(uglify())
     .pipe gulp.dest('./generated')
     .pipe(gulp.dest('./dist'))
-  
+
 gulp.task 'css', ['install'], () ->
   gulp.src(config.files.less.app)
     .pipe(plumber())
@@ -92,9 +100,11 @@ gulp.task 'css', ['install'], () ->
     .pipe(gulp.dest('./generated'))
     .pipe(cssmin())
     .pipe(gulp.dest('./dist'))
-  
+
 gulp.task 'clean', () ->
-  gulp.src(['./dist','./generated', bowerDirectory()])
+  directories = ['./dist','./generated']
+  directories.push(bowerDirectory()) if gutil.env.cleanBower
+  gulp.src(directories)
     .pipe(clean())
 
 gulp.task 'copy', ['install'], () ->
@@ -125,16 +135,21 @@ gulp.task 'watch', () ->
 
 gulp.task 'server', ['build'], (cb) ->
   gulpserver = require './gulpserver'
-  lrServer = require('gulp-livereload')()
-  gulp.watch(config.server.base + '/**').on 'change', (file)->
-    lrServer.changed file.path
-  gulpserver(config.server, cb)
+  batch = require 'gulp-batch'
+  lrServer = require 'gulp-livereload'
+
+  gulp.watch config.server.web.base + '/**/*.*', batch { timeout: 500 }, (events)->
+    lrServer.changed()
+
+  lrServer.listen()
+  gulpserver config.server, cb
 
 bowerDirectory = () ->
   fs = require 'fs'
   path = require 'path'
-  bowerpath = path.join(process.cwd(), ".bowerrc")
-  bowerrc = fs.readFileSync(bowerpath) unless !fs.existsSync bowerpath 
+
+  bowerpath = path.join process.cwd(), ".bowerrc"
+  bowerrc = fs.readFileSync(bowerpath) unless !fs.existsSync bowerpath
   bowerConfig = JSON.parse(bowerrc) if bowerrc?
   bowerConfig?.directory || "vendor/components"
- 
+

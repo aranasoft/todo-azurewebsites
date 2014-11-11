@@ -120,9 +120,14 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. Make sure your current working directory is set to the root of your
    repository.
 
+  > **Important:**  
+  > If your current directory is still `src/web` from above, proceeding
+  > to the next step will corrupt your local folder structure. Be sure
+  > your current working directory matches the root of your repository.
+
 1. Create the WebSite on Azure.
 
-  > **Note:**  
+  > **Important:**  
   > The Git username for Azure deployment is a username you specify. It
   > is _not_ your GitHub username.
 

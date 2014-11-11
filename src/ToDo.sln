@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoSample.Api", "TodoSample.Api\TodoSample.Api.csproj", "{55FD8BDD-B2C1-41EC-8A3C-395CCBA26361}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "api\API.csproj", "{55FD8BDD-B2C1-41EC-8A3C-395CCBA26361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoSample.Data", "TodoSample.Data\TodoSample.Data.csproj", "{64D46A3A-051E-45AA-B9F6-39A547136ED9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "data\Data.csproj", "{64D46A3A-051E-45AA-B9F6-39A547136ED9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoSample.Processor", "TodoSample.Processor\TodoSample.Processor.csproj", "{DB48A097-3078-4AF6-A056-41F362AED204}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Processor", "processor\Processor.csproj", "{DB48A097-3078-4AF6-A056-41F362AED204}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

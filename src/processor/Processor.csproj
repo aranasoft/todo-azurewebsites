@@ -73,7 +73,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TodoSample.Data\TodoSample.Data.csproj">
+    <ProjectReference Include="..\data\Data.csproj">
       <Project>{64d46a3a-051e-45aa-b9f6-39a547136ed9}</Project>
       <Name>TodoSample.Data</Name>
     </ProjectReference>

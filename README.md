@@ -350,7 +350,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
   if you are running on the free tier of Azure Websites, there are CPU limits; depending on
   the complexity of your build process you may hit them.
 
-1. Visit the website. Your project should be deployed.
+1. Visit the website. Your project should be deployed. `http://<YOUR_TODO_SITENAME>.azurewebsites.net`
 
 
 ## Part 3: Introducing the .NET Backend

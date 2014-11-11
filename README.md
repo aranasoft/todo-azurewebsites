@@ -67,6 +67,32 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
   git clone git@github.com:MY_GITHUB_USERNAME/todo-azurewebsites.git
   ```
 
+### Connect to your Azure Account
+
+1. From a command line, download your publication settings from your
+   Azure account:
+
+  ```bash
+  azure account download
+  ```
+
+  > This will launch a Browser into Microsoft Azure, allowing you to
+  > download your Azure Subscription's `.publishsettings` file. You may
+  > need to sign in to your account if you haven't already done so.
+
+1. Change your current directory to the path containing your
+   `.publishsettings` file. This is usually in the `Downloads` folder.
+
+  ```bash
+  cd ~/Downloads
+  ```
+
+1. Import the `.publishsettings` file into your Azure tools.
+
+  ```bash
+  azure account import <MY_FILE_NAME>.publishsettings
+  ```
+
 ### Run the stand-alone client-side web application
 
 1. Open a command prompt and navigate into the root of your GitHub
@@ -85,6 +111,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
   ```
 
 1. A browser should open automatically for your site. If it did not, navigate to `http://localhost:3000`
+
 1. Familiarize yourself with the site and its functionality. When you are finished, return to your command window, then exit the `gulp` process by entering `ctrl-c`.
 
 ## Part 2: Deplying the Web Site
@@ -92,11 +119,20 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
 1. Make sure your current working directory is set to the root of your
    repository.
-1. Create the WebSite on Azure
+
+1. Create the WebSite on Azure.
+
+  > **Note:**  
+  > The Git username for Azure deployment is a username you specify. It
+  > is _not_ your GitHub username.
 
   ```bash
   azure site create <YOUR_TODO_SITENAME> --git --gitusername <USERNAME_FOR_AZURE_DEPLOYMENT>
   ```
+
+  > You will be prompted to choose an Azure Data Center (location).
+  > Choose a data center that is close to your current geographic
+  > location.
 
 1. Create a sample deployment script for a node project
 

@@ -163,9 +163,9 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 1. Locate the `:Deployment` section in the script.  
    Note the subsections for:
 
-    1. KuduSync
-    1. SelectNodeVersion
-    1. Install npm packages
+  1. KuduSync
+  1. SelectNodeVersion
+  1. Install npm packages
 
   > **What does each section do?**
   >
@@ -239,7 +239,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
   ```dos
   pushd src\web
-  echo 3. Install npm packages
+  echo 2. Install npm packages
   IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
       pushd "%DEPLOYMENT_TARGET%"
       call :ExecuteCmd !NPM_CMD! install --production
@@ -259,7 +259,7 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
   ```dos
   pushd src\web
-  echo 3. Install npm packages
+  echo 2. Install npm packages
   IF EXIST "package.json" (
     call :ExecuteCmd !NPM_CMD! install --production
     IF !ERRORLEVEL! NEQ 0 goto error
@@ -277,13 +277,13 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
 
   ```dos
   pushd src\web
-  echo 3. Install npm packages
+  echo 2. Install npm packages
   IF EXIST "package.json" (
     call :ExecuteCmd !NPM_CMD! install --production
     IF !ERRORLEVEL! NEQ 0 goto error
   )
 
-  echo 4. Execute Gulp
+  echo Execute Gulp
   IF EXIST "Gulpfile.js" (
       call .\node_modules\.bin\gulp build
       IF !ERRORLEVEL! NEQ 0 goto error

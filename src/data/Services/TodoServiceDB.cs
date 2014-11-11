@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Configuration;
 using System.Collections.Generic;
-using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TodoSample.Data.Entities;
+using TodoList.Data.Entities;
 
-namespace TodoSample.Data.Services {
+namespace TodoList.Data.Services {
     public class TodoServiceDB {
         public IEnumerable<Todo> All()
         {

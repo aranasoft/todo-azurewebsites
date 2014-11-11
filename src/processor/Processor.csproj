@@ -7,8 +7,8 @@
     <ProjectGuid>{DB48A097-3078-4AF6-A056-41F362AED204}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TodoSample.Processor</RootNamespace>
-    <AssemblyName>TodoSample.Processor</AssemblyName>
+    <RootNamespace>TodoList.Processor</RootNamespace>
+    <AssemblyName>TodoList.Processor</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

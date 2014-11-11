@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Owin;
-using Microsoft.Owin.Cors;
-using Owin;
+using TodoList.API;
 
-[assembly: OwinStartup(typeof(TodoSample.Api.OwinStartup))]
+[assembly: OwinStartup(typeof(OwinStartup))]
 
-namespace TodoSample.Api {
+namespace TodoList.API {
     public class OwinStartup {
         public void Configuration(IAppBuilder app) {
 	    app.Map("/signalr", builder => {

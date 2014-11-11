@@ -4,13 +4,11 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using TodoSample.Data.Messages;
-using TodoSample.Data.Services;
+using TodoList.Data.Messages;
+using TodoList.Data.Services;
 
-namespace TodoSample.Data.Handlers {
+namespace TodoList.Data.Handlers {
     public class ListChanged {
         public void HandleChange(NotificationEvent changeEvent)
         {

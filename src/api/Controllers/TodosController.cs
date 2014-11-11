@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using TodoSample.Data.Entities;
-using TodoSample.Data.Services;
+using TodoList.Data.Entities;
+using TodoList.Data.Services;
 
-namespace api.Controllers {
+namespace TodoList.API.Controllers {
     public class TodosController : ApiController
     {
         //public static TodoServiceList _todoService = new TodoServiceList();

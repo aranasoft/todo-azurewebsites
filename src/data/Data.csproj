@@ -7,8 +7,8 @@
     <ProjectGuid>{64D46A3A-051E-45AA-B9F6-39A547136ED9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TodoSample.Data</RootNamespace>
-    <AssemblyName>TodoSample.Data</AssemblyName>
+    <RootNamespace>TodoList.Data</RootNamespace>
+    <AssemblyName>TodoList.Data</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

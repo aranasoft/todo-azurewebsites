@@ -1,10 +1,8 @@
 ﻿using System.Web.Http;
-using Microsoft.AspNet.SignalR;
-using TodoSample.Api.Hubs;
-using TodoSample.Data.Entities;
-using TodoSample.Data.Messages;
+using TodoList.API.Hubs;
+using TodoList.Data.Messages;
 
-namespace api.Controllers {
+namespace TodoList.API.Controllers {
     public class NotificationController : ApiController {
         // POST api/notification
         public void Post([FromBody]PointTally tally)

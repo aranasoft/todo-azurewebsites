@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.WindowsAzure.Jobs;
 using Newtonsoft.Json;
-using TodoSample.Data.Handlers;
-using TodoSample.Data.Messages;
-using TodoSample.Data.Services;
+using TodoList.Data.Handlers;
+using TodoList.Data.Messages;
+using TodoList.Data.Services;
 
-namespace TodoSample.Processor {
+namespace TodoList.Processor {
     class Program {
         static void Main(string[] args)
         {

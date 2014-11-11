@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using Newtonsoft.Json.Serialization;
 
-namespace TodoSample.Api
+namespace TodoList.API
 {
     public static class WebApiConfig
     {

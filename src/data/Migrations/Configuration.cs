@@ -1,18 +1,17 @@
-namespace TodoSample.Data.Migrations
-{
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Migrations;
-    using System.Linq;
+using System;
+using System.Linq;
+using TodoList.Data.Entities;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<TodoSample.Data.Entities.TodoContext>
+namespace TodoList.Data.Migrations
+{
+    internal sealed class Configuration : DbMigrationsConfiguration<TodoContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(TodoSample.Data.Entities.TodoContext context)
+        protected override void Seed(TodoContext context)
         {
             //  This method will be called after migrating to the latest version.
 

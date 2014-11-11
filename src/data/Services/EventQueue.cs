@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
-using TodoSample.Data.Messages;
+using TodoList.Data.Messages;
 
-namespace TodoSample.Data.Services {
+namespace TodoList.Data.Services {
     public class EventQueue : SimpleQueue
     {
         public const string QueueName = "tasklistchanged";

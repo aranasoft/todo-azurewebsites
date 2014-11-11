@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNet.SignalR;
-using TodoSample.Data.Messages;
-using TodoSample.Data.Services;
+﻿using TodoList.Data.Messages;
+using TodoList.Data.Services;
 
-namespace TodoSample.Api.Hubs {
+namespace TodoList.API.Hubs {
     public class TodosHub : Hub {
         public void FetchTotals()
         {

@@ -1,8 +1,7 @@
-namespace TodoSample.Data.Migrations
+using System;
+
+namespace TodoList.Data.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class InitialMigration : DbMigration
     {
         public override void Up()

@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Configuration;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 
-namespace TodoSample.Data.Services {
+namespace TodoList.Data.Services {
     public abstract class SimpleQueue
     {
         protected abstract string Name { get; }

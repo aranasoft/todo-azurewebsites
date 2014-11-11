@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TodoSample.Data.Entities;
+using TodoList.Data.Entities;
 
-namespace TodoSample.Data.Services {
+namespace TodoList.Data.Services {
     public class TodoServiceList
     {
         public static List<Todo> _todos = new List<Todo>

@@ -1,6 +1,4 @@
-﻿using System.Data.Entity;
-
-namespace TodoSample.Data.Entities
+﻿namespace TodoList.Data.Entities
 {
     public class TodoContext : DbContext {
         public TodoContext() : base( "name=todosdb") { }

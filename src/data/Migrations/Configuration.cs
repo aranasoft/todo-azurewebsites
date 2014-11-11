@@ -1,18 +1,15 @@
 using System;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using TodoList.Data.Entities;
 
-namespace TodoList.Data.Migrations
-{
-    internal sealed class Configuration : DbMigrationsConfiguration<TodoContext>
-    {
-        public Configuration()
-        {
+namespace TodoList.Data.Migrations {
+    internal sealed class Configuration : DbMigrationsConfiguration<TodoContext> {
+        public Configuration() {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(TodoContext context)
-        {
+        protected override void Seed(TodoContext context) {
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 

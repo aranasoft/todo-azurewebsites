@@ -10,22 +10,20 @@ using TodoList.Data.Services;
 
 namespace TodoList.Data.Handlers {
     public class ListChanged {
-        public void HandleChange(NotificationEvent changeEvent)
-        {
- 	    Trace.TraceInformation(changeEvent.Content);
+        public void HandleChange(NotificationEvent changeEvent) {
+            Trace.TraceInformation(changeEvent.Content);
 
-	    // add up the points
+            // add up the points
             var todoService = new TodoServiceDB();
-            var totalPoints = todoService.CalculateTotalPoints();
+            int totalPoints = todoService.CalculateTotalPoints();
             var tally = new PointTally {
                 PointsAvailable = totalPoints
             };
 
-           var notifictionUrl = ConfigurationManager.AppSettings["notificationUrl"];
-           using (var client = new WebClient())
-            {
-		client.Headers.Add("Content-Type", @"application/json");
-                var serializedTally = JsonConvert.SerializeObject(tally);
+            string notifictionUrl = ConfigurationManager.AppSettings["notificationUrl"];
+            using (var client = new WebClient()) {
+                client.Headers.Add("Content-Type", @"application/json");
+                string serializedTally = JsonConvert.SerializeObject(tally);
                 client.UploadString(notifictionUrl, serializedTally);
             }
         }

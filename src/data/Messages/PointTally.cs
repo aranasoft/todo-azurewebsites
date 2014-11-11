@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace TodoList.Data.Messages {
     public class PointTally {
-	[JsonProperty("pointsAvailable")]
+        [JsonProperty("pointsAvailable")]
         public int PointsAvailable { get; set; }
     }
 }

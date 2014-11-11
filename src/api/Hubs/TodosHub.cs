@@ -1,14 +1,13 @@
-﻿using TodoList.Data.Messages;
+﻿using Microsoft.AspNet.SignalR;
+using TodoList.Data.Messages;
 using TodoList.Data.Services;
 
 namespace TodoList.API.Hubs {
     public class TodosHub : Hub {
-        public void FetchTotals()
-        {
+        public void FetchTotals() {
             var todoService = new TodoServiceDB();
-            var pointTally = new PointTally
-            {
-		PointsAvailable = todoService.CalculateTotalPoints()
+            var pointTally = new PointTally {
+                PointsAvailable = todoService.CalculateTotalPoints()
             };
             Clients.All.OnTotalsUpdated(pointTally);
         }

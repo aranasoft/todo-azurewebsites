@@ -5,54 +5,48 @@ using TodoList.Data.Entities;
 using TodoList.Data.Services;
 
 namespace TodoList.API.Controllers {
-    public class TodosController : ApiController
-    {
+    public class TodosController : ApiController {
         //public static TodoServiceList _todoService = new TodoServiceList();
-	public static TodoServiceDB _todoService = new TodoServiceDB();
+        private readonly TodoServiceDB _todoService = new TodoServiceDB();
 
         // GET api/<controller>
-        public IEnumerable<Todo> Get()
-        {
+        public IEnumerable<Todo> Get() {
             return _todoService.All().ToList();
         }
 
         // GET api/<controller>/5
-        public Todo Get(int id)
-        {
+        public Todo Get(int id) {
             return _todoService.Find(id);
         }
 
         // POST api/<controller>
-        public Todo Post([FromBody]Todo newTodo)
-        {
+        public Todo Post([FromBody] Todo newTodo) {
             _todoService.Add(newTodo);
 
-	    AddChangeNotification();
+            AddChangeNotification();
 
             return newTodo;
         }
 
         // PUT api/<controller>/5
-        public Todo Put(int id, [FromBody]Todo updatedTodo)
-        {
-	    _todoService.Update(updatedTodo);
+        public Todo Put(int id, [FromBody] Todo updatedTodo) {
+            _todoService.Update(updatedTodo);
 
-	    AddChangeNotification();
+            AddChangeNotification();
 
             return updatedTodo;
         }
 
         // DELETE api/<controller>/5
         public void Delete(int id) {
-	    _todoService.Delete(id);
+            _todoService.Delete(id);
 
-	    AddChangeNotification();
+            AddChangeNotification();
         }
 
-        private void AddChangeNotification()
-        {
+        private void AddChangeNotification() {
             //var queue = new EventQueue();
-	    //queue.AddNotification();
+            //queue.AddNotification();
         }
     }
 }

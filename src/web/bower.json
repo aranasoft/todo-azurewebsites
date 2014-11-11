@@ -13,15 +13,15 @@
     "test",
     "tests"
   ],
-  "devDependencies": {
-    "bootstrap": "~3.1.1",
+  "dependencies": {
     "underscore": "~1.6.0",
-    "angular": "~1.2.14",
-    "font-awesome": "~4.0.3",
-    "angular-resource": "~1.2.14",
-    "toastr": "~2.0.1",
-    "nprogress": "~0.1.2",
-    "signalr": "~2.0.2",
-    "angular-signalr-hub": "*"
+    "angular": "~1.2.0",
+    "angular-resource": "~1.2.0",
+    "angular-signalr-hub": "*",
+    "bootstrap": "~3.3.0",
+    "toastr": "~2.1.0",
+    "signalr": "~2.1.2",
+    "nprogress": "~0.1.6",
+    "font-awesome": "~4.2.0"
   }
 }

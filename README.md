@@ -148,10 +148,14 @@ Learning how to customize deployment using [Kudu](https://github.com/projectkudu
   > This will create `deploy.cmd` in the `nodescript` folder that we will use as a template
 
 1. Open `deploy.cmd` file in the `nodescripts` folder
-2. Copy its contents to the clipboard
-3. Open the `deploy.cmd` file in the repository root
-4. Paste the clipboard contents
-5. Close the `deploy.cmd` from the `nodescripts` folder to avoid confusion
+
+1. Copy its contents to the clipboard
+
+1. Open the `deploy.cmd` file in the repository root
+
+1. Paste the clipboard contents
+
+1. Close the `deploy.cmd` from the `nodescripts` folder to avoid confusion
 
 
 ### Editing Kudu script for a gulp build

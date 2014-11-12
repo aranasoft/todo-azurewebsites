@@ -1,1 +1,5 @@
-azure site deploymentscript --aspWAP .\src\TodoSample.Api\TodoSample.Api.csproj -s .\src\TodoSample.sln -o apiscript
+From the repository root, execute:
+
+```bash
+azure site deploymentscript --aspWAP .\src\API\API.csproj -s .\src\TodoList.sln -o apiscript
+```

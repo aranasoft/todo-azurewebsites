@@ -1,1 +1,5 @@
-azure site deploymentscript --dotNetConsole .\src\TodoSample.Processor\TodoSample.Processor.csproj -s .\src\TodoSample.sln -o webjobscript
+From the repository root, execute:
+
+```dos
+azure site deploymentscript --dotNetConsole .\src\processor\Processor.csproj -s .\src\TodoList.sln -o webjobscript
+```

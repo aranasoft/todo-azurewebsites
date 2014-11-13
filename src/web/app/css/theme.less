@@ -3,6 +3,7 @@
   .make-xs-column(2);
   .make-sm-column(1);
   .make-sm-column-offset(2);
+  .text-right;
 }
 
 .todo-content {
@@ -48,4 +49,30 @@
   .btn;
   .btn-danger;
   .btn-sm;
+}
+
+
+input[type=checkbox] {
+  display: none;
+}
+input[type=checkbox] + .todo-checkbox:before {
+  font: normal normal normal 30px/1.1 FontAwesome; // shortening font declaration
+  text-rendering: auto; // optimizelegibility throws things off #1094
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: @fa-var-square-o;
+  display: inline-block;
+  width: 35px;
+  .text-left;
+}
+input[type=checkbox]:checked + .todo-checkbox:before {
+  content: @fa-var-check-square-o;
+}
+input[type=checkbox]:checked {
+  content: @fa-var-square-o;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+  font-size: 15px;
+  color: #f3f3f3;
+  text-align: center;
+  line-height: 15px;
 }

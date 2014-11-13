@@ -11,23 +11,29 @@
     <h1 class="text-center page-header">ToDo List <small>getting things done</small></h1>
     <section class="container-fluid" ng-controller="TodoController">
       <div class="row">
-         <div class="todo-completed">
-           <input type="checkbox" class="form-control" ng-model="newTodo.completed"/>
-         </div>
-         <div class="todo-content">
-           <input type="text" class="form-control" ng-model="newTodo.content"/>
-         </div>
-         <div class="todo-points">
-           <input type="number" class="form-control" ng-model="newTodo.points"/>
-         </div>
-         <div class="todo-actions">
-           <button class="action-add" ng-click="addItem(newTodo)"><i class="fa fa-lg fa-save"></i></button>
+        <div class="todo-completed">
+          <label>
+            <input type="checkbox" class="form-control" ng-model="newTodo.completed"/>
+            <i class="todo-checkbox"></i>
+          </label>
+        </div>
+        <div class="todo-content">
+          <input type="text" class="form-control" ng-model="newTodo.content"/>
+        </div>
+        <div class="todo-points">
+          <input type="number" class="form-control" ng-model="newTodo.points"/>
+        </div>
+        <div class="todo-actions">
+          <button class="action-add" ng-click="addItem(newTodo)"><i class="fa fa-lg fa-save"></i></button>
         </div>
       </div>
 
       <div class="row" ng-repeat="todo in todos">
         <div class="todo-completed">
-          <input type="checkbox" class="form-control" ng-model="todo.completed"/>
+          <label>
+            <input type="checkbox" class="form-control" ng-model="todo.completed"/>
+            <i class="todo-checkbox"></i>
+          </label>
         </div>
         <div class="todo-content">
           <input type="text" class="form-control" ng-model="todo.content"/>
